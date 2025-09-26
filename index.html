@@ -70,44 +70,50 @@
         </div>
         <p class="sub" id="hint">예) 2001-08-15</p>
         <div id="result" class="result">
-          <div class="grid">
-            <div class="cardbox">
-              <div class="row">
-                <div class="lpnum" id="lpnum">–</div>
-                <div>
-                  <div><span class="k">라이프 패스 넘버</span> · <span id="lptext">—</span></div>
-                  <div class="muted" id="doblabel"></div>
-                </div>
-              </div>
-            </div>
-            <div class="cardbox">
-              <div class="tarot-pane">
-                <div class="imgframe" id="imgframe">
-                  <!-- 이미지가 없으면 플레이스홀더로 대체 -->
-                  <div class="ph" id="placeholder">
-                    <div>
-                      <div class="num" id="phnum">–</div>
-                      <div class="nm" id="phname">카드</div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div class="k" id="tarotline">—</div>
-                  <div class="keywords" id="keywords"></div>
-                  <div class="desc" id="desc">—</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="copybox" id="copybox">결과 페이지 링크가 복사되었습니다. 어디든 붙여넣어 공유해보세요 😊</div>
+  <div class="grid">
+    <!-- 왼쪽: 라이프 패스 박스 -->
+    <div class="cardbox">
+      <div class="row">
+        <div class="lpnum" id="lpnum">–</div>
+        <div>
+          <div><span class="k">라이프 패스 넘버</span> · <span id="lptext">—</span></div>
+          <div class="muted" id="doblabel"></div>
         </div>
       </div>
-      <div class="footer">
-        카드 이미지를 넣으려면, 이 파일과 같은 폴더에 <code>cards/숫자.png</code> (예: <code>4.png</code>)를 추가하세요. <br/>
-        바보 카드는 <code>0.png</code> 또는 <code>22.png</code>를 둘 다 지원합니다.
+      <!-- 여기 두 줄이 새로 추가된 부분 -->
+      <div class="desc" id="lp-plus">—</div>
+      <div class="desc muted" id="lp-minus">—</div>
+    </div>
+
+    <!-- 오른쪽: 타로 카드 박스 -->
+    <div class="cardbox">
+      <div class="tarot-pane">
+        <div class="imgframe" id="imgframe">
+          <!-- 이미지가 없으면 플레이스홀더 -->
+          <div class="ph" id="placeholder">
+            <div>
+              <div class="num" id="phnum">–</div>
+              <div class="nm" id="phname">카드</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="k" id="tarotline">—</div>
+          <div class="keywords" id="keywords"></div>
+          <div class="desc" id="desc">—</div>
+          <!-- 시너지 한 줄이 새로 추가된 부분 -->
+          <div class="desc" id="synergy">—</div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- 복사 알림 박스(그대로 유지) -->
+  <div class="copybox" id="copybox">
+    결과 페이지 링크가 복사되었습니다. 어디든 붙여넣어 공유해보세요 😊
+  </div>
+</div>
+
 
 <script>
 function sumDigits(str){ return str.split('').reduce((a,ch)=> a + (/\d/.test(ch)? Number(ch):0), 0); }
