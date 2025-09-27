@@ -246,6 +246,76 @@ const LP = {
     synergy: '22는 0(바보)와 연결: “가볍게 시작→거대한 실현”으로 완주력이 생김.'
   }
 };
+<script>
+// ─────────────────────────────────────────────────────────────
+// 라이프 패스별 (+) 강점, (-) 약점, (→) 시너지 설명 사전
+// {card} 는 실제 타로 카드 이름으로 치환됩니다.
+// ─────────────────────────────────────────────────────────────
+const EXPLAINS = {
+  1: {
+    plus: "강점: 선도력과 추진력이 뛰어나 스스로 길을 엽니다. 의사결정이 빠르고 목표 지향적입니다.",
+    minus:"약점: 독단적으로 보이거나, 협업에서 융통성이 부족해질 수 있습니다. 완벽주의가 스트레스를 키울 수 있어요.",
+    synergy:"시너지: {card}와(과) 만났을 때, ‘내가 직접 시작한다’는 에너지가 강해집니다. 1인 프로젝트·창업·선도적 시도에서 성과가 잘 납니다."
+  },
+  2: {
+    plus: "강점: 조율·협업·배려의 감각이 좋습니다. 사람과 사람 사이의 미묘한 간격을 잘 맞춥니다.",
+    minus:"약점: 결정을 미루거나 타인의 눈치를 보다 기회를 놓칠 수 있습니다.",
+    synergy:"시너지: {card}와(과) 함께라면 ‘관찰과 직관’이 탁월해집니다. 리서치·상담·기획 초기 검증에서 빛을 봅니다."
+  },
+  3: {
+    plus: "강점: 표현력·창의성이 풍부합니다. 말·글·디자인·콘텐츠에서 매력이 살아납니다.",
+    minus:"약점: 에너지가 분산되기 쉬워 마무리가 느슨해질 수 있어요. 일정과 우선순위가 중요합니다.",
+    synergy:"시너지: {card}와(과) 만나면 ‘아이디어가 실제로 자랍니다’. 브랜딩·콘텐츠·커뮤니티에서 영향력이 커집니다."
+  },
+  4: {
+    plus: "강점: 구조화·시스템·관리 역량이 강합니다. 꾸준함과 책임감으로 신뢰를 쌓습니다.",
+    minus:"약점: 변화를 꺼리거나, 규칙에 과도하게 의존할 수 있습니다.",
+    synergy:"시너지: {card}와(과) 함께하면 ‘튼튼한 기반 위의 성장’이 빠릅니다. 운영·재무·프로세스 개선에서 강점이 두드러집니다."
+  },
+  5: {
+    plus: "강점: 변화와 실험을 두려워하지 않습니다. 트렌드 감각과 적응력이 뛰어납니다.",
+    minus:"약점: 루틴이 쉽게 무너지고, 과한 자극을 찾다 피로가 누적될 수 있어요.",
+    synergy:"시너지: {card}와(과) 만나면 ‘배움과 전파’의 흐름이 좋아집니다. 교육·여행·새로운 서비스의 베타 론칭에 유리합니다."
+  },
+  6: {
+    plus: "강점: 책임감·돌봄·조화에 강합니다. 관계와 팀의 균형을 잡아줍니다.",
+    minus:"약점: 타인을 지나치게 챙기다 본인이 소진될 수 있어요. 경계 설정이 필요합니다.",
+    synergy:"시너지: {card}와(과) 함께라면 ‘관계 속 선택’이 선명해집니다. 파트너십·고객 경험·커뮤니티 운영에서 빛납니다."
+  },
+  7: {
+    plus: "강점: 탐구심·분석력·내적 집중력이 탁월합니다. 깊이 파고드는 연구형 기질입니다.",
+    minus:"약점: 과도한 고립이나 완벽주의로 실행이 늦어질 수 있어요.",
+    synergy:"시너지: {card}와(과) 만나면 ‘정밀한 집중 → 명확한 결론’의 루프가 강해집니다. 리서치·전략·데이터 분석에 최적."
+  },
+  8: {
+    plus: "강점: 성취욕·리더십·재정감각이 강합니다. 성과를 구조화해 키우는 능력이 있습니다.",
+    minus:"약점: 통제가 과해지면 팀의 자율성이 떨어지고, 갈등이 생길 수 있어요.",
+    synergy:"시너지: {card}와(과) 함께하면 ‘조용하지만 단단한 힘’이 발휘됩니다. 협상·운영 총괄·수익화 전략에서 유리합니다."
+  },
+  9: {
+    plus: "강점: 공감·지혜·포용의 에너지가 큽니다. 큰 그림에서 의미를 찾고 가치를 전합니다.",
+    minus:"약점: 현실적 디테일을 놓치거나, 지나친 이상화로 실행력이 떨어질 수 있어요.",
+    synergy:"시너지: {card}와(과) 만나면 ‘내적 통찰 → 타인에게 비춘 등불’이 됩니다. 멘토링·콘텐츠 큐레이션·봉사 프로젝트에 적합."
+  },
+  11: {
+    plus: "강점: 직관·통찰·영감의 흐름이 강합니다. 핵심을 꿰뚫는 시선과 메시지를 가집니다.",
+    minus:"약점: 감정 기복이나 예민함으로 체력이 소모될 수 있어요. 리듬 관리가 필수입니다.",
+    synergy:"시너지: {card}와(과) 함께라면 ‘진실로 균형 맞추기’가 핵심입니다. 의사결정·편집·검증 단계에서 강력."
+  },
+  22: {
+    plus: "강점: 마스터 빌더. 큰 비전을 ‘실제 시스템’으로 구현하는 능력이 있습니다.",
+    minus:"약점: 스케일이 커서 준비 없이 달리면 좌초 위험이 큽니다. 파트·스테이크홀더 관리가 필수.",
+    synergy:"시너지: {card}와(과) 만나면 ‘새로운 여정의 대담한 시작’이 안전레일을 갖추고 출발합니다. 대형 프로젝트·플랫폼 구축에 최적."
+  }
+};
+
+// 기본 설명(안전망)
+const EXPLAINS_FALLBACK = {
+  plus: "강점: 당신만의 강점이 선명해지는 시기입니다.",
+  minus:"약점: 무리하거나 조급하게 굴지 않도록 스스로를 보살펴 주세요.",
+  synergy:"시너지: {card}의 상징과 라이프 패스가 만나 새로운 흐름을 만듭니다."
+};
+</script>
 
 
 function calc(dobStr){
@@ -282,6 +352,9 @@ function render(dob){
   const result = document.getElementById('result');
   const lpnum = document.getElementById('lpnum');
   const lptext = document.getElementById('lptext');
+  const lpplus = document.getElementById('lp-plus');
+  const lpminus = document.getElementById('lp-minus');
+  const synergy = document.getElementById('synergy');
   const doblabel = document.getElementById('doblabel');
   const tarotline = document.getElementById('tarotline');
   const keywords = document.getElementById('keywords');
@@ -298,7 +371,10 @@ function render(dob){
   lpnum.textContent = lifePath;
   lptext.textContent = LP[lifePath] || '—';
   doblabel.textContent = '생일: ' + dob;
-
+  const ex = EXPLAINS[lifePath] || EXPLAINS_FALLBACK;
+  lpplus.textContent  = ex.plus;
+  lpminus.textContent = ex.minus;
+  synergy.textContent = (ex.synergy || '').replaceAll('{card}', tarot?.name || '해당 카드');
   tarotline.textContent = tarot ? (tarot.name + ' · 카드 번호 ' + tarot.num) : '—';
   // keywords badges
   keywords.innerHTML = '';
