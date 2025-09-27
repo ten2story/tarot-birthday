@@ -1,52 +1,317 @@
-function main(){
-  // 세그먼트 입력 참조
-  const yy = document.getElementById('yy');
-  const mm = document.getElementById('mm');
-  const dd = document.getElementById('dd');
-  const btn = document.getElementById('calc');
-  const shareBtn = document.getElementById('share');
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>내 타로 탄생번호 & 라이프 패스</title>
+<style>
+  :root{
+    --bg:#FAFAFE; --card:#FFFFFF; --ink:#222433; --muted:#6B6B7A;
+    --accent:#6E65F4; --accent-2:#9E91FF; --ring:rgba(158,145,255,.28);
+    --soft:#F4F2FF; --soft-2:#F8F7FF; --pill:#EFEAFF;
+    --good:#4C3EF7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', sans-serif;
+       background: linear-gradient(180deg, #F7F5FF, #FAFAFE); color:var(--ink)}
+  .wrap{max-width:880px; margin:0 auto; padding:28px 20px 40px}
+  .hero{text-align:center; padding:20px 0 24px}
+  h1{margin:0; font-size:30px; font-weight:900; letter-spacing:-.5px}
+  .sub{color:var(--muted); margin:6px 0 14px; font-size:14px}
+  .panel{background:var(--card); border:1px solid #EFEFFD; border-radius:18px; padding:18px;
+         box-shadow:0 10px 26px rgba(60,40,120,.06)}
+  .controls{display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; margin:12px 0 8px}
+  input[type="date"]{padding:10px 12px; border:1px solid #DDD7FF; border-radius:10px; outline:none; font-size:16px; background:#fff}
+  input[type="date"]:focus{box-shadow:0 0 0 8px var(--ring); border-color:#CFC6FF}
+  button{padding:10px 14px; border:none; border-radius:10px; background:var(--accent); color:#fff;
+         font-weight:800; cursor:pointer; letter-spacing:.2px}
+  button:hover{filter:brightness(.97)}
+  #share{background:var(--accent-2); display:none}
+  .result{margin-top:16px; display:none}
+  .grid{display:grid; grid-template-columns:1fr; gap:18px}
+  @media (min-width:820px){ .grid{grid-template-columns: 1.4fr 1fr} }
+  .cardbox{background:var(--soft); border:1px solid #EEE8FF; border-radius:18px; padding:20px}
+  .row{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .lpnum{font-size:56px; font-weight:900; color:var(--good); min-width:76px}
+  .muted{color:var(--muted)}
+  .k{font-weight:900}
+  .tarot-pane{display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center}
+  @media (max-width:480px){ .tarot-pane{grid-template-columns:1fr} }
+  .imgframe{width:150px; height:235px; border-radius:16px; background:linear-gradient(180deg,#FFF,#F6F2FF);
+            border:1px solid #EEE8FF; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative}
+  .imgframe img{width:100%; height:100%; object-fit:cover; display:block}
+  .ph{display:flex; align-items:center; justify-content:center; text-align:center; padding:16px; color:#7B74B1}
+  .ph .num{font-size:40px; font-weight:900; line-height:1}
+  .ph .nm{font-weight:800; margin-top:6px}
+  .keywords{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0}
+  .kw{background:#F1EEFF; color:#4F46E5; border:1px solid #E6E0FF; padding:6px 12px; border-radius:999px; font-weight:700; font-size:13.5px}
+  .desc{line-height:1.8; font-size:15.5px}
+  .footer{margin-top:20px; font-size:12px; color:var(--muted); text-align:center}
+  .copybox{display:none; margin-top:10px; background:#F7F5FF; border:1px dashed #DAD1FF; border-radius:10px; padding:10px; color:#574F9A}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>내 타로 탄생번호 & 라이프 패스</h1>
+      <p class="sub">생일을 입력하면, 라이프 패스 넘버와 연결된 타로 메이저 아르카나가 자동으로 표시됩니다.</p>
+      <div class="panel">
+        <div class="controls">
+          <input type="date" id="dob" aria-label="생년월일" />
+          <button id="calc">계산하기</button>
+          <button id="share">결과 링크 복사</button>
+        </div>
+        <p class="sub" id="hint">예) 2001-08-15</p>
+        <div id="result" class="result">
+          <div class="grid">
+            <!-- 왼쪽: 수비학 -->
+            <div class="cardbox">
+              <div class="row">
+                <div class="lpnum" id="lpnum">–</div>
+                <div>
+                  <div><span class="k">라이프 패스 넘버</span> · <span id="lptext">—</span></div>
+                  <div class="muted" id="doblabel"></div>
+                </div>
+              </div>
+              <div class="keywords" id="lp-tags"></div>
+              <div class="desc" id="lp-summary">—</div>
+              <div class="desc" id="lp-plus">—</div>
+              <div class="desc muted" id="lp-minus">—</div>
+            </div>
+            <!-- 오른쪽: 타로 -->
+            <div class="cardbox">
+              <div class="tarot-pane">
+                <div class="imgframe" id="imgframe">
+                  <div class="ph" id="placeholder">
+                    <div>
+                      <div class="num" id="phnum">–</div>
+                      <div class="nm" id="phname">카드</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="k" id="tarotline">—</div>
+                  <div class="keywords" id="keywords"></div>
+                  <div class="desc" id="desc">—</div>
+                  <div class="desc" id="synergy">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="copybox" id="copybox">결과 페이지 링크가 복사되었습니다. 어디든 붙여넣어 공유해보세요 😊</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  // 숫자만, maxlength 도달 시 다음으로 자동 포커스
-  const segs = [yy, mm, dd];
-  segs.forEach((el, i) => {
-    el.addEventListener('input', () => {
-      const max = parseInt(el.getAttribute('maxlength') || '0', 10);
-      el.value = el.value.replace(/\D/g,'').slice(0, max);
-      if (el.value.length === max && i < segs.length - 1) segs[i+1].focus();
-    });
+<script>
+/* ---------- 숫자 계산 ---------- */
+function sumDigits(str){ return str.split('').reduce((a,ch)=> a + (/\d/.test(ch)? Number(ch):0), 0); }
+function reduceNumber(n){ if(n===11||n===22) return n; while(n>9){ n=String(n).split('').reduce((a,b)=>a+Number(b),0); if(n===11||n===22) break; } return n; }
+
+/* ---------- 타로 카드 데이터(메이저 0~21) ---------- */
+const TAROT = {
+  0:{name:'바보 (The Fool)', num:'0/22', kw:['순수','도전','새 출발','자유'],
+     desc:'틀을 깨고 새로운 여정을 시작하는 에너지. 계산보다 감각으로 첫 걸음을 내딛습니다.'},
+  1:{name:'마법사 (The Magician)', num:'1', kw:['시작','창조','의지','실행'],
+     desc:'머릿속의 아이디어를 현실로 불러오는 힘. “지금, 여기서” 실행이 답입니다.'},
+  2:{name:'여사제 (High Priestess)', num:'2', kw:['직관','내면','비밀','지혜'],
+     desc:'겉보다 속을 보는 눈. 조용하지만 정확한 통찰로 길을 선택합니다.'},
+  3:{name:'여황제 (The Empress)', num:'3', kw:['풍요','창조성','돌봄','자연'],
+     desc:'삶을 키우는 따뜻한 힘. 관계와 작업이 풍성해지는 시기입니다.'},
+  4:{name:'황제 (The Emperor)', num:'4', kw:['구조','안정','책임','리더십'],
+     desc:'토대를 세우고 지키는 힘. 지속 가능한 시스템을 만들 때 성과가 납니다.'},
+  5:{name:'교황 (The Hierophant)', num:'5', kw:['전통','신뢰','가르침','멘토'],
+     desc:'믿을 수 있는 길을 제시하는 안내자. 배우고 나누며 신뢰를 쌓습니다.'},
+  6:{name:'연인 (The Lovers)', num:'6', kw:['사랑','선택','조화','관계'],
+     desc:'중요한 선택의 순간. 마음과 가치가 일치하는 방향을 고르세요.'},
+  7:{name:'전차 (The Chariot)', num:'7', kw:['의지','추진력','승리','집중'],
+     desc:'흔들림 없이 밀어붙이는 힘. 속도보다 방향 유지가 승리의 핵심입니다.'},
+  8:{name:'힘 (Strength)', num:'8', kw:['용기','인내','자기 통제'],
+     desc:'부드러운 강함. 스스로를 다스릴 때 외부의 난관도 풀립니다.'},
+  9:{name:'은둔자 (The Hermit)', num:'9', kw:['탐구','성찰','지혜','고독'],
+     desc:'잠시 멈춰 등불을 켭니다. 혼자서의 시간이 해답을 비춥니다.'},
+  10:{name:'운명의 수레바퀴 (Wheel of Fortune)', num:'10', kw:['변화','흐름','전환','기회'],
+     desc:'올라가기도 내려가기도 하는 바퀴. 흐름을 읽으면 기회가 보입니다.'},
+  11:{name:'정의 (Justice)', num:'11', kw:['균형','공정','진실','책임'],
+     desc:'저울을 다시 맞춥니다. 선택에는 결과가 따릅니다.'},
+  12:{name:'매달린 사람 (Hanged Man)', num:'12', kw:['관점 전환','멈춤','수용'],
+     desc:'잠시 멈춰 다른 각도로 보기. 내려놓음이 역설적으로 진전을 만듭니다.'},
+  13:{name:'죽음 (Death)', num:'13', kw:['종결','재탄생','큰 변화'],
+     desc:'끝은 시작의 다른 이름. 낡은 것을 보내야 새것이 들어옵니다.'},
+  14:{name:'절제 (Temperance)', num:'14', kw:['조화','중용','균형','치유'],
+     desc:'섞고, 희석하고, 맞춥니다. 무리하지 않는 조합이 오랫동안 갑니다.'},
+  15:{name:'악마 (The Devil)', num:'15', kw:['유혹','집착','패턴'],
+     desc:'묶는 것은 사슬이 아니라 습관. 인식하면 절반은 풀렸습니다.'},
+  16:{name:'탑 (The Tower)', num:'16', kw:['붕괴','각성','해방'],
+     desc:'견고해 보였던 것이 무너질 때, 진짜 자유가 시작됩니다.'},
+  17:{name:'별 (The Star)', num:'17', kw:['희망','영감','치유','비전'],
+     desc:'먼 곳의 빛이 길을 가리킵니다. 서두르지 않아도 됩니다.'},
+  18:{name:'달 (The Moon)', num:'18', kw:['무의식','불안','상상','직감'],
+     desc:'안개 속 길. 두려움과 상상이 뒤섞입니다. 직감을 믿고 천천히.'},
+  19:{name:'태양 (The Sun)', num:'19', kw:['성취','생명력','자신감','기쁨'],
+     desc:'가장 밝은 카드. 마음껏 펼치고, 나누고, 축하하세요.'},
+  20:{name:'심판 (Judgement)', num:'20', kw:['부름','회복','각성','새 삶'],
+     desc:'깊은 곳에서 울리는 호출. 예전의 나를 넘어서는 순간입니다.'},
+  21:{name:'세계 (The World)', num:'21', kw:['완성','통합','귀결','순환'],
+     desc:'여정의 한 바퀴가 닫힙니다. 끝이자 다음 원의 시작입니다.'}
+};
+
+/* ---------- 수비학: 키워드/요약/강점/주의/시너지 ---------- */
+const LP_TAGS={
+  1:['독립','리더십','실행'], 2:['공감','조율','협력'], 3:['표현','창의','즐거움'],
+  4:['안정','성실','시스템'], 5:['변화','자유','탐험'], 6:['책임','돌봄','조화'],
+  7:['탐구','분석','집중'], 8:['성과','재정','권위'], 9:['지혜','봉사','의미'],
+  11:['통찰','균형','영감'], 22:['비전','구현','마스터']
+};
+
+const EXPLAINS={
+  1:{plus:"새 판을 여는 힘이 좋아요. 눈치 덜 보고 먼저 걸어 보면 길이 납니다.",
+     minus:"혼자 밀어붙이다가 관계가 뻣뻣해질 수 있어요. 완급 조절이 필요해요.",
+     synergy:"{card}와 함께면 ‘아이디어를 바로 행동’으로 옮기기 쉬워요."},
+  2:{plus:"사람 사이 간격을 부드럽게 맞춥니다. 섬세한 공감이 강점이에요.",
+     minus:"과하게 배려하다 결정이 늦어질 수 있어요. 기준선을 정해 보세요.",
+     synergy:"{card}와 함께면 관찰·직관이 또렷해집니다."},
+  3:{plus:"말·글·디자인 같은 표현이 살아납니다. 즐거움이 작업에 스며들어요.",
+     minus:"재미만 좇다 마무리가 느슨해질 수 있으니 일정 관리를 꼭 하세요.",
+     synergy:"{card}와 함께면 좋은 생각이 ‘실물’로 잘 자랍니다."},
+  4:{plus:"루틴과 시스템을 깔끔히 세웁니다. 신뢰가 꾸준히 쌓여요.",
+     minus:"변화에 둔감해질 수 있어요. 가끔은 실험을 허용해 보세요.",
+     synergy:"{card}와 함께면 ‘튼튼한 기반 위 성장’이 빨라집니다."},
+  5:{plus:"변화에 강하고 전환이 빠릅니다. 새 판을 여는 감각이 있어요.",
+     minus:"루틴이 쉽게 깨질 수 있어요. 작은 습관 고정 장치를 두세요.",
+     synergy:"{card}와 만나면 배움·여행·베타 론칭에 순풍이 붑니다."},
+  6:{plus:"책임감과 돌봄이 빛나요. 관계의 균형을 잘 잡아 줍니다.",
+     minus:"과한 책임으로 번아웃이 올 수 있어요. ‘나의 몫’ 경계를 지켜요.",
+     synergy:"{card}와 함께면 가치 정렬된 파트너십이 성과를 끌어올립니다."},
+  7:{plus:"깊이 파고드는 탐구력, 본질을 겨냥하는 판단력이 좋아요.",
+     minus:"고립되기 쉽고 속도가 느려질 수 있어요. 실행 리듬을 쪼개 보세요.",
+     synergy:"{card}의 추진력과 결합하면 ‘깊이+속도’가 동시에 살아납니다."},
+  8:{plus:"목표 달성과 수익화에 집중이 잘 됩니다. 리더십이 단단해요.",
+     minus:"성과 집착으로 관계가 경직될 수 있어요. 유연함을 챙겨요.",
+     synergy:"{card}와 함께면 ‘부드러운 통제’로 지속가능한 성과 관리가 됩니다."},
+  9:{plus:"지혜·포용·의미 찾기에 강합니다. 큐레이션/상담 적성이 좋아요.",
+     minus:"현실 실행력이 약해질 수 있어요. 작은 액션을 꾸준히 밟아 보세요.",
+     synergy:"{card}와 만나면 ‘내적 통찰 → 타인에게 비춘 등불’이 됩니다."},
+  11:{plus:"한 끗을 꿰뚫는 통찰과 균형감이 돋보여요.",
+      minus:"완벽주의·자기검열로 실행이 느려질 수 있어요. 80% 룰을 써보세요.",
+      synergy:"{card}와 공명하면 ‘공정·균형’ 기준이 또렷해집니다."},
+  22:{plus:"큰 비전을 실제 시스템으로 구현하는 ‘마스터 빌더’ 기질이에요.",
+      minus:"스케일만 키우다 과부하가 올 수 있어요. 단계별 안전레일을 두세요.",
+      synergy:"{card}와 만나면 ‘가볍게 시작→크게 실현’ 루프가 강해집니다."}
+};
+
+const EXPLAINS_FALLBACK={
+  plus:"강점이 또렷해지는 흐름입니다.",
+  minus:"속도를 너무 올리지 말고, 자기 돌봄을 챙겨 주세요.",
+  synergy:"{card}의 상징과 만나 새로운 흐름이 생깁니다."
+};
+
+/* ---------- 계산/렌더 ---------- */
+function calc(dobStr){
+  const sum = dobStr ? sumDigits(dobStr) : 0;
+  const lifePath = reduceNumber(sum);
+  const tarot = (lifePath===22) ? TAROT[0] : TAROT[lifePath];
+  return {lifePath, tarot};
+}
+function tryLoadImage(numList){
+  return new Promise(res=>{
+    const frame=document.getElementById('imgframe');
+    const ph=document.getElementById('placeholder');
+    const old=frame.querySelector('img'); if(old) old.remove();
+    function next(i){
+      if(i>=numList.length){ ph.style.display='flex'; return res(false); }
+      const img=new Image(); const src='cards/'+numList[i]+'.png';
+      img.onload=()=>{ ph.style.display='none'; frame.appendChild(img); res(true); };
+      img.onerror=()=>next(i+1);
+      img.src=src;
+    }
+    next(0);
+  });
+}
+
+function render(dob){
+  const result=document.getElementById('result');
+  const lpnum=document.getElementById('lpnum');
+  const lptext=document.getElementById('lptext');
+  const lptags=document.getElementById('lp-tags');
+  const lpsummary=document.getElementById('lp-summary');
+  const lpplus=document.getElementById('lp-plus');
+  const lpminus=document.getElementById('lp-minus');
+  const doblabel=document.getElementById('doblabel');
+  const tarotline=document.getElementById('tarotline');
+  const keywords=document.getElementById('keywords');
+  const desc=document.getElementById('desc');
+  const synergy=document.getElementById('synergy');
+  const phnum=document.getElementById('phnum');
+  const phname=document.getElementById('phname');
+  const shareBtn=document.getElementById('share');
+  const copybox=document.getElementById('copybox');
+
+  const {lifePath, tarot}=calc(dob);
+  result.style.display='block'; copybox.style.display='none';
+
+  // 수비학 영역
+  lpnum.textContent=lifePath;
+  lptext.textContent=(LP_TAGS[lifePath]||[]).join('·') || '—';
+  doblabel.textContent='생일: '+dob;
+
+  lptags.innerHTML='';
+  (LP_TAGS[lifePath]||[]).forEach(t=>{
+    const s=document.createElement('span'); s.className='kw'; s.textContent=t; lptags.appendChild(s);
   });
 
-  // URL 쿼리 반영(있다면)
-  const params = new URLSearchParams(location.search);
-  const dobQ = params.get('dob');  // yyyy-mm-dd 형식
-  if(dobQ && /^\d{4}-\d{2}-\d{2}$/.test(dobQ)){
-    yy.value = dobQ.slice(0,4);
-    mm.value = dobQ.slice(5,7);
-    dd.value = dobQ.slice(8,10);
-    render(dobQ);
-  }
+  const ex=EXPLAINS[lifePath] || EXPLAINS_FALLBACK;
+  lpsummary.textContent = `${tarot?.name||'해당 카드'}와 이어지는 흐름입니다. 당신의 ${ (LP_TAGS[lifePath]||[]).join('·') } 기질이 두드러져요.`;
+  lpplus.textContent  = '강점: ' + ex.plus;
+  lpminus.textContent = '주의: ' + ex.minus;
 
-  // 계산 버튼
-  btn.addEventListener('click', ()=>{
-    const y = yy.value.trim();
-    const m = mm.value.trim();
-    const d = dd.value.trim();
-    if (y.length!==4 || m.length===0 || d.length===0){
-      alert('생년월일을 정확히 입력해 주세요. (예: 2001-08-15)'); return;
-    }
-    const mm2 = m.padStart(2,'0');
-    const dd2 = d.padStart(2,'0');
-    const dob = `${y}-${mm2}-${dd2}`;
+  // 타로 영역
+  tarotline.textContent = tarot ? (tarot.name+' · 카드 번호 '+tarot.num) : '—';
+  keywords.innerHTML='';
+  (tarot?.kw||[]).forEach(k=>{
+    const span=document.createElement('span'); span.className='kw'; span.textContent=k; keywords.appendChild(span);
+  });
+  desc.textContent = tarot?.desc || '—';
+  synergy.textContent = '시너지: ' + (ex.synergy || '').replaceAll('{card}', tarot?.name || '해당 카드');
 
-    // 유효한 날짜인지 간단 체크
-    const t = new Date(dob);
-    if (isNaN(t.getTime()) || t.getFullYear()!=+y || (t.getMonth()+1)!=+mm2 || t.getDate()!=+dd2){
-      alert('유효한 날짜가 아니에요. 다시 확인해 주세요.'); return;
-    }
+  // 플레이스홀더 텍스트
+  phnum.textContent = tarot?.num || '–';
+  phname.textContent = tarot?.name || '카드';
 
+  // 이미지 로딩 (22=0/22)
+  const nums=(lifePath===22)?[0,22]:[lifePath];
+  tryLoadImage(nums);
+
+  shareBtn.style.display='inline-block';
+  history.replaceState({},'',location.pathname+'?dob='+dob);
+}
+
+/* ---------- 공유/초기화 ---------- */
+function onShare(){
+  const copybox=document.getElementById('copybox');
+  const url=location.href;
+  navigator.clipboard?.writeText(url).then(()=>{
+    copybox.style.display='block';
+    setTimeout(()=> copybox.style.display='none',2000);
+  }).catch(()=> alert('클립보드 복사가 지원되지 않아요. 주소창 링크를 복사해 주세요.'));
+}
+
+function main(){
+  const input=document.getElementById('dob');
+  const btn=document.getElementById('calc');
+  const shareBtn=document.getElementById('share');
+  const params=new URLSearchParams(location.search);
+  const dobQ=params.get('dob');
+  if(dobQ){ input.value=dobQ; render(dobQ); }
+  btn.addEventListener('click',()=>{
+    const dob=input.value;
+    if(!dob){ alert('생년월일을 선택하세요.'); return; }
     render(dob);
   });
-
-  // 공유 버튼
-  shareBtn.addEventListener('click', onShare);
+  shareBtn.addEventListener('click',onShare);
 }
+main();
+</script>
+</body>
+</html>
