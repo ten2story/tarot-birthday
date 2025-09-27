@@ -18,14 +18,14 @@
     color:var(--ink);
   }
   .wrap{max-width:980px; margin:0 auto; padding:28px 18px 48px}
-  .hero{
-    padding:12px 0 22px; text-align:center;
-  }
+  .hero{ padding:12px 0 22px; text-align:center; }
+  /* ▶ 타이틀: 진한 톤 + 은은한 그라데이션 */
   .title{
     margin:8px 0 6px;
     font-size:34px; line-height:1.25; letter-spacing:-.3px; font-weight:900;
-    background:linear-gradient(180deg,#3A338A,#221F4A);
+    background:linear-gradient(180deg,#18173A 0%, #2C2962 55%, #0F0D28 100%);
     -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 1px 0 rgba(255,255,255,.25);
   }
   .sub{color:var(--muted); margin:2px auto 14px; max-width:680px}
   .panel{
@@ -43,6 +43,7 @@
   button:hover{filter:brightness(.97)}
   #share{background:var(--accent-2); display:none}
   .result{margin-top:16px; display:none}
+  /* ▶ PC에선 타로가 조금 더 넓게 */
   .grid{display:grid; grid-template-columns: 0.95fr 1.05fr; gap:16px}
   @media (max-width:880px){ .grid{grid-template-columns:1fr} }
   .box{background:var(--soft); border:1px solid #EEE8FF; border-radius:16px; padding:16px}
@@ -206,61 +207,61 @@ const LP_META = {
   22:{label:'대기획·구현',     kw:['마스터','플랫폼','실현']}
 };
 
-/* ---------- 수비학 확장 설명 (각각 2~3문장) ---------- */
+/* ---------- 수비학 확장 설명(문장 살짝 추가) ---------- */
 const EXPLAINS = {
   1:{
     plus:"스스로 길을 여는 개척자 기질이 강합니다. 결단과 추진력이 뛰어나 중요한 시작을 책임질 수 있습니다. 압박 상황에서도 방향을 잡아 주는 리더십이 돋보입니다.",
-    minus:"독단적으로 보이거나 조율이 부족해 갈등이 생길 수 있습니다. 시작은 빠르지만 마무리를 구조화하지 않으면 소모가 커질 수 있어요.",
+    minus:"독단적으로 보이거나 조율이 부족해 갈등이 생길 수 있습니다. 시작은 빠르지만 마무리를 구조화하지 않으면 소모가 커질 수 있어요. ‘초기 설계표+데드라인’ 조합이 안전벨트가 됩니다.",
     synergy:"{card}와(과) 만나면 아이디어→실행의 속도가 탁월해집니다. 1인 프로젝트·창업·선도적 시도에서 돌파구가 열립니다."
   },
   2:{
-    plus:"관계의 온도와 맥락을 섬세하게 읽습니다. 협업·중재 능력이 뛰어나 팀의 균형을 잡아 줍니다.",
-    minus:"결정을 미루거나 눈치를 보다가 기회를 놓칠 수 있습니다. 감정 피로가 누적되기 쉬우니 회복 루틴이 필요해요.",
+    plus:"관계의 온도와 맥락을 섬세하게 읽습니다. 협업·중재 능력이 뛰어나 팀의 균형을 잡아 줍니다. 사람 사이의 ‘간격’을 잘 맞추는 재능이 있어요.",
+    minus:"결정을 미루거나 눈치를 보다가 기회를 놓칠 수 있습니다. 감정 피로가 누적되기 쉬우니 회복 루틴이 필요해요. 때로는 ‘나의 기준’을 또렷이 말하는 용기도 중요합니다.",
     synergy:"{card}와(과) 결합하면 직관과 공감이 정밀해집니다. 리서치·상담·기획 초기 검증에서 강점이 두드러집니다."
   },
   3:{
-    plus:"표현과 창의의 불꽃이 살아 있습니다. 글·말·디자인 등 다양한 방식으로 즐겁게 몰입하며 사람들에게 활력을 전합니다.",
-    minus:"흥미가 중심이 되면 프로젝트가 중도에 멈추거나 완성도가 흔들릴 수 있습니다. 작은 목표·체크리스트로 리듬을 잡으세요.",
+    plus:"표현과 창의의 불꽃이 살아 있습니다. 글·말·디자인 등 다양한 방식으로 즐겁게 몰입하며 사람들에게 활력을 전합니다. ‘즐거움 기반 성과’가 가장 자연스럽습니다.",
+    minus:"흥미가 중심이 되면 프로젝트가 중도에 멈추거나 완성도가 흔들릴 수 있습니다. 작은 목표·체크리스트로 리듬을 잡으세요. 피드백을 일찍 받으면 완성도가 크게 오릅니다.",
     synergy:"{card}와(과) 만나면 아이디어가 실제 ‘성과물’로 풍성해집니다. 콘텐츠·브랜딩·커뮤니티 영역에서 영향력이 커집니다."
   },
   4:{
-    plus:"구조화·시스템·운영 역량이 단단합니다. 꾸준함과 책임감으로 신뢰를 쌓고 장기 성과를 안정화합니다.",
-    minus:"변화를 피하거나 지나치게 규칙에 의존할 수 있습니다. ‘시험판→표준화’ 순서로 유연함을 확보하세요.",
+    plus:"구조화·시스템·운영 역량이 단단합니다. 꾸준함과 책임감으로 신뢰를 쌓고 장기 성과를 안정화합니다. 당신이 만든 룰이 모두를 편하게 합니다.",
+    minus:"변화를 피하거나 지나치게 규칙에 의존할 수 있습니다. ‘시험판→표준화’ 순서로 유연함을 확보하세요. 새로움에 작은 실험창을 항상 열어두면 좋아요.",
     synergy:"{card}와(과) 함께하면 기반과 거버넌스가 빠르게 정리됩니다. 매뉴얼·프로세스·재무 관리에서 강점을 보입니다."
   },
   5:{
-    plus:"변화와 실험을 두려워하지 않습니다. 트렌드에 빠르게 적응하며 새 판을 짜는 능력이 탁월합니다.",
-    minus:"루틴이 쉽게 무너지고 중도 이탈 위험이 있습니다. 장기 목표를 작은 스프린트로 나눠 관리하세요.",
+    plus:"변화와 실험을 두려워하지 않습니다. 트렌드에 빠르게 적응하며 새 판을 짜는 능력이 탁월합니다. 낯선 환경에서 오히려 에너지가 납니다.",
+    minus:"루틴이 쉽게 무너지고 중도 이탈 위험이 있습니다. 장기 목표를 작은 스프린트로 나눠 관리하세요. ‘금요일 회고’ 같은 리듬이 효과적입니다.",
     synergy:"{card}와(과) 결합하면 ‘자유 속의 내공’이 붙습니다. 교육·여행·신규 서비스 베타 론칭에 유리합니다."
   },
   6:{
-    plus:"돌봄·책임·조화의 에너지가 큽니다. 관계와 팀의 균형을 잡아 주며 믿음을 구축합니다.",
-    minus:"과잉 책임으로 번아웃이 올 수 있습니다. 경계 설정과 역할 분담이 중요합니다.",
+    plus:"돌봄·책임·조화의 에너지가 큽니다. 관계와 팀의 균형을 잡아 주며 믿음을 구축합니다. 서비스 마인드가 고객경험을 견인합니다.",
+    minus:"과잉 책임으로 번아웃이 올 수 있습니다. 경계 설정과 역할 분담이 중요합니다. ‘도움 요청’도 능력의 일부라는 걸 기억하세요.",
     synergy:"{card}와(과) 함께하면 ‘가치 정렬된 선택’이 선명해집니다. 파트너십·고객 경험·커뮤니티 운영에서 성과가 납니다."
   },
   7:{
-    plus:"탐구·분석·성찰의 기질이 강해 본질을 정확히 짚어냅니다. 깊이 있는 연구와 정리로 문제를 해결합니다.",
-    minus:"과한 고립과 완벽주의로 실행이 늦어질 수 있습니다. 적시성 있는 ‘80% 완성’ 전략을 병행하세요.",
+    plus:"탐구·분석·성찰의 기질이 강해 본질을 정확히 짚어냅니다. 깊이 있는 연구와 정리로 문제를 해결합니다. 야근보다 ‘깊은 집중 한 시간’이 더 성과 납니다.",
+    minus:"과한 고립과 완벽주의로 실행이 늦어질 수 있습니다. 적시성 있는 ‘80% 완성’ 전략을 병행하세요. 결과 공유 주기를 짧게 가져가면 속도가 납니다.",
     synergy:"{card}와(과) 결합하면 깊이+속도가 동시에 살아납니다. 전략·데이터·리서치 결과를 실전에 연결합니다."
   },
   8:{
-    plus:"성과와 재정·거버넌스에 강합니다. 목표를 구조화해 키우는 능력이 뛰어나 조직을 안정화합니다.",
-    minus:"통제가 과하면 팀의 자율성이 떨어지고 갈등이 생깁니다. ‘원칙은 단단, 운용은 유연’을 기억하세요.",
+    plus:"성과와 재정·거버넌스에 강합니다. 목표를 구조화해 키우는 능력이 뛰어나 조직을 안정화합니다. ‘확장 계획’에 현실성이 묻어납니다.",
+    minus:"통제가 과하면 팀의 자율성이 떨어지고 갈등이 생깁니다. ‘원칙은 단단, 운용은 유연’을 기억하세요. 권한 위임 표준을 마련하면 갈등이 줄어듭니다.",
     synergy:"{card}와(과) 함께면 부드러운 통제로 지속 가능한 성과 관리가 가능합니다. 협상·수익화·운영 총괄에서 유리합니다."
   },
   9:{
-    plus:"포용·봉사·지혜의 에너지가 큽니다. 큰 그림의 의미를 읽고 사람들의 마음을 다독이는 능력이 있습니다.",
-    minus:"현실 디테일을 놓치거나 이상화로 실행력이 떨어질 수 있습니다. 실무 파트너와의 조합이 필요해요.",
+    plus:"포용·봉사·지혜의 에너지가 큽니다. 큰 그림의 의미를 읽고 사람들의 마음을 다독이는 능력이 있습니다. 당신의 말이 타인에게 ‘안심’을 줍니다.",
+    minus:"현실 디테일을 놓치거나 이상화로 실행력이 떨어질 수 있습니다. 실무 파트너와의 조합이 필요해요. KPI를 몇 개만 명확히 정하면 속도가 납니다.",
     synergy:"{card}와(과) 결합하면 ‘내적 통찰→타인에게 비춘 등불’이 됩니다. 멘토링·큐레이션·커뮤니티 케어에 강합니다."
   },
   11:{
-    plus:"통찰·영감이 예리합니다. 균형감 있는 판단으로 본질을 간파하고 메시지를 또렷하게 전합니다.",
-    minus:"완벽주의와 예민함으로 체력이 소모될 수 있습니다. 리듬 관리와 휴식 설계가 성과의 관건입니다.",
+    plus:"통찰·영감이 예리합니다. 균형감 있는 판단으로 본질을 간파하고 메시지를 또렷하게 전합니다. 복잡한 사안도 핵심 한 줄로 정리할 수 있어요.",
+    minus:"완벽주의와 예민함으로 체력이 소모될 수 있습니다. 리듬 관리와 휴식 설계가 성과의 관건입니다. ‘디지털 안식시간’을 생활화해 보세요.",
     synergy:"{card}와(과) 함께하면 ‘진실 위의 균형’이 강화됩니다. 의사결정·편집·검증 단계에서 강력합니다."
   },
   22:{
-    plus:"마스터 빌더. 큰 비전과 복잡한 시스템을 실제로 구현하는 능력이 있습니다. 다양한 이해관계를 설계해 완주로 이끕니다.",
-    minus:"스케일이 커서 준비 없이 달리면 좌초 위험이 큽니다. 파트 분할·책임 매트릭스·리스크 보완을 병행하세요.",
+    plus:"마스터 빌더. 큰 비전과 복잡한 시스템을 실제로 구현하는 능력이 있습니다. 다양한 이해관계를 설계해 완주로 이끕니다. 장기 로드맵에 강합니다.",
+    minus:"스케일이 커서 준비 없이 달리면 좌초 위험이 큽니다. 파트 분할·책임 매트릭스·리스크 보완을 병행하세요. ‘MVP→확장’ 순서가 안전합니다.",
     synergy:"{card}와(과) 만나면 ‘가볍게 시작→거대한 실현’으로 이어집니다. 대형 프로젝트·플랫폼 구축에 최적입니다."
   }
 };
@@ -317,7 +318,6 @@ function render(dob){
   result.style.display = 'block';
   copybox.style.display = 'none';
 
-  // numerology meta
   const meta = LP_META[lifePath] || {label:'—', kw:[]};
   lpnum.textContent = lifePath;
   lptext.textContent = meta.label;
@@ -325,23 +325,19 @@ function render(dob){
   meta.kw.forEach(k=>{ const s=document.createElement('span'); s.className='kw'; s.textContent=k; lpkw.appendChild(s); });
   doblabel.textContent = '생일: ' + dob;
 
-  // extended explains
   const ex = EXPLAINS[lifePath] || EXPLAINS_FALLBACK;
   lpplus.textContent  = ex.plus;
   lpminus.textContent = ex.minus;
 
-  // tarot info
   tarotline.textContent = tarot ? (tarot.name + ' · 카드 번호 ' + tarot.num) : '—';
   keywords.innerHTML = '';
   (tarot?.kw || []).forEach(k=>{ const span=document.createElement('span'); span.className='kw'; span.textContent=k; keywords.appendChild(span); });
   desc.textContent = tarot?.desc || '—';
   synergy.textContent = (ex.synergy || '').replaceAll('{card}', tarot?.name || '해당 카드');
 
-  // placeholders
   phnum.textContent = tarot?.num || '–';
   phname.textContent = tarot?.name || '카드';
 
-  // image load: 0/22 for Fool, otherwise lifepath number
   const nums = (lifePath===22) ? [0,22] : [lifePath];
   tryLoadImage(nums);
 
@@ -378,9 +374,8 @@ function main(){
     });
   });
 
-  // URL 파라미터
   const params = new URLSearchParams(location.search);
-  const dobQ = params.get('dob'); // yyyy-mm-dd
+  const dobQ = params.get('dob');
   if(dobQ && /\d{4}-\d{2}-\d{2}/.test(dobQ)){
     yy.value = dobQ.slice(0,4); mm.value = dobQ.slice(5,7); dd.value = dobQ.slice(8,10);
     render(dobQ);
